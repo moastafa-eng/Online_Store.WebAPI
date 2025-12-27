@@ -1,7 +1,7 @@
 ﻿namespace Domain.Entities
 {
-    public class BaseEntity<T>
+    public class BaseEntity<TKey>
     {
-        T Id { get; set; }
+        public TKey Id { get; set; }
     }
 }

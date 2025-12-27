@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities.Products
 {
-    internal class ProductType : BaseEntity<int>
+    public class ProductType : BaseEntity<int>
     {
         string Name { get; set; } = null!;
     }
