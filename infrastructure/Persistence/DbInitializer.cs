@@ -1,0 +1,86 @@
+﻿// Ignore Spelling: Initializer
+
+using Domain.Contracts;
+using Domain.Entities.Products;
+using Microsoft.EntityFrameworkCore;
+using Persistence.Data.DbContexts;
+using System.Text.Json;
+
+namespace Persistence
+{
+    public class DbInitializer(StoreDbContext _context) : IDbInitializer
+    {
+        public async Task InitializeAsync()
+        {
+            //Asynchronously get all migrations that are defined in assembly but have not been applied to the target data base. 
+            var pendingMigurations = await _context.Database.GetPendingMigrationsAsync();
+
+
+            // Create data base if it does not exist and applying any pending migrations. 
+            if (pendingMigurations.Any())
+            {
+                await _context.Database.MigrateAsync();
+            }
+
+
+            //------------------------
+            // Data Seeding
+            //------------------------
+
+            // check is there is any data in ProductBrands table
+            if(!_context.ProductBrands.Any())
+            {
+
+                // ProductBrand Seeding 
+
+                // Read all text from Brands.Json
+                var productBrandsData = await File.ReadAllTextAsync(@"..\infrastructure\Persistence\Data\Data Seeding\brands.json");
+
+                // convert Json text to List of ProductBrands
+                var productBrands = JsonSerializer.Deserialize<List<ProductBrand>>(productBrandsData);
+
+                // add data to productBrands table if it not null and it's cont > 0
+                if(productBrands is not null && productBrands.Count > 0)
+                {
+                    await _context.AddRangeAsync(productBrands);
+                }
+            }
+
+            // Check is there any data in ProductTypes table
+            if(!_context.ProductTypes.Any())
+            {
+                // Read all text from type.Json
+                var prodcutTypesData = await File.ReadAllTextAsync(@"..\infrastructure\Persistence\Data\Data Seeding\types.json");
+
+                // Convert Json text to list of ProductType
+                var productTypes = JsonSerializer.Deserialize<List<ProductType>>(prodcutTypesData);
+
+                // Add data to ProductTypes table if it not null and it's count > 0
+                if (productTypes is not null && productTypes.Count > 0)
+                {
+                    await _context.AddRangeAsync(productTypes);
+                }
+            }
+
+            // Check is there any data in Products table
+            if(!_context.Products.Any())
+            {
+                // Read all text from products.Json
+                var productData = await File.ReadAllTextAsync(@"..\infrastructure\Persistence\Data\Data Seeding\products.json");
+
+                // convert Json text to list  of products
+                var products = JsonSerializer.Deserialize<List<Product>>(productData);
+
+                // add data to products table if it not null and it's count > 0
+                if (products is not null && products.Count() > 0)
+                {
+                    await _context.AddRangeAsync(products);
+                }
+            }
+
+
+            // Save all changes
+            await _context.SaveChangesAsync();
+        }
+    }
+}

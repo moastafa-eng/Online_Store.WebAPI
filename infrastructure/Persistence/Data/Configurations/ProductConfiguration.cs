@@ -23,7 +23,7 @@ namespace Persistence.Data.Configurations
 
             builder.Property(x => x.Description)
                 .HasColumnType("varchar")
-                .HasMaxLength(300);
+                .HasMaxLength(1000);
 
             // Relation ship configurations
 

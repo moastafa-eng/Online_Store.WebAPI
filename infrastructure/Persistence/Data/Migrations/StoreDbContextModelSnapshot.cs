@@ -34,7 +34,7 @@ namespace Persistence.Data.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(300)
+                        .HasMaxLength(1000)
                         .HasColumnType("varchar");
 
                     b.Property<string>("Name")
@@ -59,7 +59,7 @@ namespace Persistence.Data.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Domain.Entities.Products.ProductBrand", b =>
@@ -77,7 +77,7 @@ namespace Persistence.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductBrand");
+                    b.ToTable("ProductBrands");
                 });
 
             modelBuilder.Entity("Domain.Entities.Products.ProductType", b =>
@@ -95,7 +95,7 @@ namespace Persistence.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductType");
+                    b.ToTable("ProductTypes");
                 });
 
             modelBuilder.Entity("Domain.Entities.Products.Product", b =>
@@ -103,13 +103,13 @@ namespace Persistence.Data.Migrations
                     b.HasOne("Domain.Entities.Products.ProductBrand", "Brand")
                         .WithMany()
                         .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Products.ProductType", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Brand");

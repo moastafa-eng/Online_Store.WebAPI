@@ -3,14 +3,14 @@
     public class Product : BaseEntity<int>
     {
         // Properties
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
-        public string PictureUrl { get; set; } = null!;
+        public string Name { get; set; } 
+        public string Description { get; set; } 
+        public string PictureUrl { get; set; } 
         public decimal Price { get; set; }
 
         // Navigational Properties
-        public ProductBrand Brand { get; set; } = null!;
-        public ProductType Type { get; set; } = null!;
+        public ProductBrand Brand { get; set; }
+        public ProductType Type { get; set; }
 
         // Foreign Keys
         public int BrandId { get; set; }

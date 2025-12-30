@@ -1,12 +1,15 @@
 
+using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Persistence;
 using Persistence.Data.DbContexts;
+using System.Threading.Tasks;
 
 namespace Online_Store.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +26,17 @@ namespace Online_Store.Web
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); // connection string from AppSettings.
             });
 
+            // DI Container
+            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
             var app = builder.Build();
+
+            #region DBInitializer
+            // Create scop and ask CLR to create obj from IDbIntializer
+            var scope = app.Services.CreateScope();
+            var DbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+            await DbInitializer.InitializeAsync(); 
+            #endregion
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
