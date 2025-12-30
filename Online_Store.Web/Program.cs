@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using Persistence.Data.DbContexts;
+
 namespace Online_Store.Web
 {
     public class Program
@@ -13,6 +16,12 @@ namespace Online_Store.Web
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Add StoreDbContex to DI container.
+            builder.Services.AddDbContext<StoreDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); // connection string from AppSettings.
+            });
 
             var app = builder.Build();
 

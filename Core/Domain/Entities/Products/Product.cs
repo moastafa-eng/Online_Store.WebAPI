@@ -3,9 +3,9 @@
     public class Product : BaseEntity<int>
     {
         // Properties
-        string Name { get; set; } = null!;
-        string Description { get; set; } = null!;
-        string PictureUrl { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public string Description { get; set; } = null!;
+        public string PictureUrl { get; set; } = null!;
         public decimal Price { get; set; }
 
         // Navigational Properties
