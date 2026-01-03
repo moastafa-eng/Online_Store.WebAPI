@@ -16,7 +16,7 @@ namespace Persistence
             var pendingMigurations = await _context.Database.GetPendingMigrationsAsync();
 
 
-            // Create data base if it does not exist and applying any pending migrations. 
+            // Create DB if it does not exist and applying any pending migrations. 
             if (pendingMigurations.Any())
             {
                 await _context.Database.MigrateAsync();
