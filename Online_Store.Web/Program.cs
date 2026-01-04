@@ -3,6 +3,9 @@ using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data.DbContexts;
+using Persistence.UnitOfWorks;
+using Services;
+using Services.Abstractions;
 using Services.Mapping.Products;
 using System.Threading.Tasks;
 
@@ -29,7 +32,8 @@ namespace Online_Store.Web
 
             // DI Container
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
-            builder.Services.AddScoped<IUnitOfWork, IUnitOfWork>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IServiceManager, ServiceManager>();
             builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile()));
 
             var app = builder.Build();

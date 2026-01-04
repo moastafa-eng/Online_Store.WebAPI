@@ -1,5 +1,6 @@
 ﻿using Domain.Contracts;
 using Domain.Entities;
+using Domain.Entities.Products;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data.DbContexts;
 
@@ -10,13 +11,23 @@ namespace Persistence.Repositories
         public async Task<IEnumerable<TEntity>> GetAllAsync(bool ChangeTracker = false)
         {
             // return All Fields without tracking if i want this.
+            if(typeof(TEntity) == typeof(Product))
+            {
+                return ChangeTracker ? await _context.Products.Include(b => b.Brand).Include(t => t.Type).ToListAsync() as IEnumerable<TEntity> :
+                await _context.Products.Include(b => b.Brand).Include(t => t.Type).AsNoTracking().ToListAsync() as IEnumerable<TEntity>;
+            }
+
             return ChangeTracker ? await _context.Set<TEntity>().ToListAsync() :
-                await _context.Set<TEntity>().AsNoTracking().ToListAsync();
+            await _context.Set<TEntity>().AsNoTracking().ToListAsync();
         }
 
-        public async Task<TEntity?> GetByIdAsync(TKey id)
+        public async Task<TEntity?> GetByIdAsync(TKey key)
         {
-            return await _context.Set<TEntity>().FindAsync(id);
+            if(typeof(TEntity) == typeof(Product))
+            {
+                return await _context.Products.Include(b => b.Brand).Include(t => t.Type).FirstOrDefaultAsync(x => x.Id == key as int?) as TEntity;
+            }
+            return await _context.Set<TEntity>().FindAsync(key);
         }
 
         public async Task AddAsync(TEntity entity)
