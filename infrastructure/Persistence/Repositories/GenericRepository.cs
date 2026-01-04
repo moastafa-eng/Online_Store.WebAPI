@@ -9,12 +9,12 @@ namespace Persistence.Repositories
     {
         public async Task<IEnumerable<TEntity>> GetAllAsync(bool ChangeTracker = false)
         {
-            // return All Fields without tracking is i want this.
+            // return All Fields without tracking if i want this.
             return ChangeTracker ? await _context.Set<TEntity>().ToListAsync() :
                 await _context.Set<TEntity>().AsNoTracking().ToListAsync();
         }
 
-        public async Task<TEntity?> GetAsync(TKey id)
+        public async Task<TEntity?> GetByIdAsync(TKey id)
         {
             return await _context.Set<TEntity>().FindAsync(id);
         }
