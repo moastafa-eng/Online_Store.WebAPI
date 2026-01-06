@@ -45,11 +45,13 @@ namespace Persistence.Repositories
             _context.Remove(entity);
         }
 
+        // GetAllAsync overload.
         public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<TEntity, TKey> spec, bool ChangeTracker = false)
         {
             return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).ToListAsync();
         }
 
+        // GetByIdAsync overload
         public async Task<TEntity?> GetByIdAsync(ISpecifications<TEntity, TKey> spec)
         {
             return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).FirstOrDefaultAsync();

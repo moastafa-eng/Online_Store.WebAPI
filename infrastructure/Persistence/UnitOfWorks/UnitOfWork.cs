@@ -27,7 +27,7 @@ namespace Persistence.UnitOfWorks
         #endregion
 
         #region GetRepository-Second Method
-        private ConcurrentDictionary<string, object> _repositories = new ConcurrentDictionary<string, object>();
+        private readonly ConcurrentDictionary<string, object> _repositories = new();
         public IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>() where TEntity : BaseEntity<TKey>
         {
             // Return GenericRepository if it exists Or add GenericRepository if does not exist

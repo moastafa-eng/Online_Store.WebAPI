@@ -21,7 +21,7 @@ namespace Persistence
 
             // aggregate => concatenation
             // _context.Products.Where('expression').Include('includeExpression').Inlude('includeExpression')+...
-            spec.Includes.Aggregate(query, (query, includeExpression) => query.Include(includeExpression));
+            query = spec.Includes.Aggregate(query, (query, includeExpression) => query.Include(includeExpression));
 
 
             return query;
