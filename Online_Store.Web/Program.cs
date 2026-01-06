@@ -34,7 +34,7 @@ namespace Online_Store.Web
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
-            builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile()));
+            builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile(builder.Configuration)));
 
             var app = builder.Build();
 
@@ -42,8 +42,10 @@ namespace Online_Store.Web
             // Create scop and ask CLR to create obj from IDbIntializer
             var scope = app.Services.CreateScope();
             var DbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-            await DbInitializer.InitializeAsync(); 
+            await DbInitializer.InitializeAsync();
             #endregion
+
+            app.UseStaticFiles(); // Enable static files during response
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
