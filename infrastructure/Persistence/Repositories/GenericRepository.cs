@@ -45,6 +45,15 @@ namespace Persistence.Repositories
             _context.Remove(entity);
         }
 
+        public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<TEntity, TKey> spec, bool ChangeTracker = false)
+        {
+            return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).ToListAsync();
+        }
+
+        public async Task<TEntity?> GetByIdAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).FirstOrDefaultAsync();
+        }
     }
 }
 
