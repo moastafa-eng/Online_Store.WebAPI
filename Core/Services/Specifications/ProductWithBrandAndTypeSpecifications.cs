@@ -5,7 +5,14 @@ namespace Services.Specifications
 {
     public class ProductWithBrandAndTypeSpecifications : BaseSpecifications<Product, int>
     {
-        public ProductWithBrandAndTypeSpecifications() : base(null) // In case : Get all without filter expression.
+        public ProductWithBrandAndTypeSpecifications(int? brandId, int? typeId) : base
+            (
+            // force the first query to be true to execute the second query, maybe second query is not null! 
+                p =>
+                (!brandId.HasValue || p.BrandId == brandId)
+                &&
+                (!typeId.HasValue || p.TypeId == typeId)
+            )
         {
             ApplyIncludes();
         }

@@ -8,9 +8,9 @@ namespace Presentation
     public class ProductsController(IServiceManager _serviceManager) : ControllerBase  // ControllerBase does not contain View Tools
     {
         [HttpGet] // Route : BaseUrl/api/products
-        public async Task<IActionResult> GetAllProductsAsync()
+        public async Task<IActionResult> GetAllProductsAsync(int? brandId, int? typeId)
         {
-            var result = await _serviceManager.ProductService.GetAllProductsAsync();
+            var result = await _serviceManager.ProductService.GetAllProductsAsync(brandId, typeId);
 
             // if result == null return status code 404 not found else return status code 200 Successfully 
             if (result is null) return NotFound();
