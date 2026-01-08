@@ -9,13 +9,13 @@ namespace Services.Products
 {
     public class ProductService(IUnitOfWork _unitOfWork, IMapper _mapper) : IProductService
     {
-        public async Task<IEnumerable<ProductResponse>> GetAllProductsAsync(int? brandId, int? typeId, string? sort)
+        public async Task<IEnumerable<ProductResponse>> GetAllProductsAsync(int? brandId, int? typeId, string? sort, string? search)
         {
             //var spec = new BaseSpecifications<Product, int>(null);
             //spec.Includes.Add(p => p.Brand);
             //spec.Includes.Add(p => p.Type);
 
-            var spec = new ProductWithBrandAndTypeSpecifications(brandId, typeId, sort);
+            var spec = new ProductWithBrandAndTypeSpecifications(brandId, typeId, sort, search);
 
             // Get all products and Mapping from Products to List of ProductResponse
             var products = await _unitOfWork.GetRepository<Product, int>().GetAllAsync(spec);

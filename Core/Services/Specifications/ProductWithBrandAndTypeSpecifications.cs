@@ -1,17 +1,18 @@
 ﻿using Domain.Entities.Products;
-using System.Linq.Expressions;
 
 namespace Services.Specifications
 {
     public class ProductWithBrandAndTypeSpecifications : BaseSpecifications<Product, int>
     {
-        public ProductWithBrandAndTypeSpecifications(int? brandId, int? typeId, string? sort) : base
+        public ProductWithBrandAndTypeSpecifications(int? brandId, int? typeId, string? sort, string? search) : base
             (
-            // force the first query to be true to execute the second query, maybe second query is not null! 
+                // force the first query to be true to execute the second query, maybe second query is not null! 
                 p =>
                 (!brandId.HasValue || p.BrandId == brandId)
                 &&
                 (!typeId.HasValue || p.TypeId == typeId)
+                &&
+                (string.IsNullOrEmpty(search) || p.Name.ToLower().Contains(search.ToLower())) // Search by name
             )
         {
             ApplyIncludes();
