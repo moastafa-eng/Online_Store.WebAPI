@@ -1,23 +1,24 @@
 ﻿using Domain.Entities.Products;
+using Shard;
 
 namespace Services.Specifications
 {
     public class ProductWithBrandAndTypeSpecifications : BaseSpecifications<Product, int>
     {
-        public ProductWithBrandAndTypeSpecifications(int? brandId, int? typeId, string? sort, string? search, int? pageIndex, int? pageSize) : base
+        public ProductWithBrandAndTypeSpecifications(ProductQueryParameters parameters) : base
             (
                 // force the first query to be true to execute the second query, maybe second query is not null! 
                 p =>
-                (!brandId.HasValue || p.BrandId == brandId)
+                (!parameters.BrandId.HasValue || p.BrandId == parameters.BrandId)
                 &&
-                (!typeId.HasValue || p.TypeId == typeId)
+                (!parameters.TypeId.HasValue || p.TypeId == parameters.TypeId)
                 &&
-                (string.IsNullOrEmpty(search) || p.Name.ToLower().Contains(search.ToLower())) // Search by name
+                (string.IsNullOrEmpty(parameters.Search) || p.Name.ToLower().Contains(parameters.Search.ToLower())) // Search by name
             )
         {
             ApplyIncludes();
-            ApplaySorting(sort);
-            SetPagination(pageIndex.Value, pageSize.Value);
+            ApplaySorting(parameters.Sort);
+            SetPagination(parameters.PageIndex.Value, parameters.PageSize.Value);
         }
 
         public ProductWithBrandAndTypeSpecifications(int id) : base(p => p.Id == id) // in case GetById with filter expression.
