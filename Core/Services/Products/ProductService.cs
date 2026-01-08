@@ -10,19 +10,25 @@ namespace Services.Products
 {
     public class ProductService(IUnitOfWork _unitOfWork, IMapper _mapper) : IProductService
     {
-        public async Task<IEnumerable<ProductResponse>> GetAllProductsAsync(ProductQueryParameters parameters)
+        public async Task<PaginationResponse<ProductResponse>> GetAllProductsAsync(ProductQueryParameters parameters)
         {
             //var spec = new BaseSpecifications<Product, int>(null);
             //spec.Includes.Add(p => p.Brand);
             //spec.Includes.Add(p => p.Type);
 
             var spec = new ProductWithBrandAndTypeSpecifications(parameters);
+            var specCount = new ProductsCountSpecifications(parameters);
 
             // Get all products and Mapping from Products to List of ProductResponse
             var products = await _unitOfWork.GetRepository<Product, int>().GetAllAsync(spec);
             var result = _mapper.Map<IEnumerable<ProductResponse>>(products);
 
-            return result;
+            // Product count without pagination.
+            var Count = await _unitOfWork.GetRepository<Product, int>().CountAsync(specCount);
+
+            var paginationResponse = new PaginationResponse<ProductResponse>(parameters.PageIndex, parameters.PageSize, Count, result);
+
+            return paginationResponse;
         }
 
         public async Task<ProductResponse> GetProductByIdAsync(int id)

@@ -18,7 +18,7 @@ namespace Services.Specifications
         {
             ApplyIncludes();
             ApplaySorting(parameters.Sort);
-            SetPagination(parameters.PageIndex.Value, parameters.PageSize.Value);
+            SetPagination(parameters.PageIndex, parameters.PageSize);
         }
 
         public ProductWithBrandAndTypeSpecifications(int id) : base(p => p.Id == id) // in case GetById with filter expression.
