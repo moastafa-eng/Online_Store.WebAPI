@@ -21,5 +21,12 @@ namespace Domain.Contracts
         // For OrderByAsc & OrderByDesc expression section(null-able properties)
         Expression<Func<TEntity, object>>? OrderByAsc { get; set; }
         Expression<Func<TEntity, object>>? OrderByDesc { get; set; }
+
+
+
+        // Pagination 
+        int Skip { get; set; }
+        int Take { get; set; }
+        bool IsPagination { get; set; }
     }
 }

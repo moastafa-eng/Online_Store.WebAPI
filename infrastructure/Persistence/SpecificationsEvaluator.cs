@@ -31,6 +31,12 @@ namespace Persistence
                 query = query.OrderByDescending(spec.OrderByDesc);
             }
 
+            // **Apply Skip & Take Pagination
+            if(spec.IsPagination)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
+            }
+
                 //  **Apply Include expression if includes property is not null.**
                 // aggregate => concatenation
                 // _context.Products.Where('expression').OrderBy(p => p.Price).Include('includeExpression').Inlude('includeExpression')+...

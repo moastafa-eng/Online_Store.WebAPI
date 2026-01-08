@@ -4,7 +4,7 @@ namespace Services.Specifications
 {
     public class ProductWithBrandAndTypeSpecifications : BaseSpecifications<Product, int>
     {
-        public ProductWithBrandAndTypeSpecifications(int? brandId, int? typeId, string? sort, string? search) : base
+        public ProductWithBrandAndTypeSpecifications(int? brandId, int? typeId, string? sort, string? search, int? pageIndex, int? pageSize) : base
             (
                 // force the first query to be true to execute the second query, maybe second query is not null! 
                 p =>
@@ -17,6 +17,7 @@ namespace Services.Specifications
         {
             ApplyIncludes();
             ApplaySorting(sort);
+            SetPagination(pageIndex.Value, pageSize.Value);
         }
 
         public ProductWithBrandAndTypeSpecifications(int id) : base(p => p.Id == id) // in case GetById with filter expression.
