@@ -13,15 +13,28 @@ namespace Persistence
         {
             var query = inputQuery; // _context.Products
 
-            // check if Criteria is not null
+            // **Apply filter expression if Criteria is not null**
             if(spec.Criteria is not null)
             {
                 query = query.Where(spec.Criteria); // _context.Products.Where('Filter Expression')
             }
 
-            // aggregate => concatenation
-            // _context.Products.Where('expression').Include('includeExpression').Inlude('includeExpression')+...
-            query = spec.Includes.Aggregate(query, (query, includeExpression) => query.Include(includeExpression));
+            //  **Apply OrderByAsc & OrderByDesc Expression**
+            // _context.Products.Where('Filter Expression').OrderBy(p => p.Pirce)
+            if (spec.OrderByAsc is not null)
+            {
+                query = query.OrderBy(spec.OrderByAsc);
+            }
+
+            else if(spec.OrderByDesc is not null)
+            {
+                query = query.OrderByDescending(spec.OrderByDesc);
+            }
+
+                //  **Apply Include expression if includes property is not null.**
+                // aggregate => concatenation
+                // _context.Products.Where('expression').OrderBy(p => p.Price).Include('includeExpression').Inlude('includeExpression')+...
+                query = spec.Includes.Aggregate(query, (query, includeExpression) => query.Include(includeExpression));
 
 
             return query;
