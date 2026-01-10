@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Domain.Exceptions.NotFoundEx;
+using Microsoft.AspNetCore.Http;
 using Shard.ModelErrors;
 
 namespace Online_Store.Web.MiddleWares
@@ -21,7 +22,11 @@ namespace Online_Store.Web.MiddleWares
             catch(Exception ex)
             {
                 // 1.Set Status Code
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                context.Response.StatusCode = ex switch
+                {
+                    ProductNotFoundEx => StatusCodes.Status404NotFound,
+                    _=> StatusCodes.Status500InternalServerError
+                };
 
                 // 2.Set Content Type
                 context.Response.ContentType = "Application/Json";

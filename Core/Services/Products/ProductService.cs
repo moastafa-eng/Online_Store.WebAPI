@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Entities.Products;
+using Domain.Exceptions.NotFoundEx;
 using Services.Abstractions.Products;
 using Services.Specifications;
 using Shard;
@@ -37,6 +38,9 @@ namespace Services.Products
 
             // Get Product by id then mapping from product to productResponse.
             var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(spec);
+
+            if (product is null) throw new ProductNotFoundEx(id);
+
             var result = _mapper.Map<ProductResponse>(product);
 
             return result;

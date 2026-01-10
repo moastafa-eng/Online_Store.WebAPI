@@ -13,7 +13,6 @@ namespace Presentation
         {
             var result = await _serviceManager.ProductService.GetAllProductsAsync(parameters);
 
-            // if result == null return status code 404 not found else return status code 200 Successfully 
             if (result is null) return NotFound();
 
             return Ok(result);
@@ -26,8 +25,6 @@ namespace Presentation
             if (id is null) return BadRequest();
 
             var product = await _serviceManager.ProductService.GetProductByIdAsync(id.Value);
-
-            if (product is null) return NotFound(); 
 
             return Ok(product);
         }
