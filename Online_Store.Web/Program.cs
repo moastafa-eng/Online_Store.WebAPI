@@ -1,6 +1,7 @@
 
 using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Online_Store.Web.MiddleWares;
 using Persistence;
 using Persistence.Data.DbContexts;
 using Persistence.UnitOfWorks;
@@ -44,6 +45,8 @@ namespace Online_Store.Web
             var DbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
             await DbInitializer.InitializeAsync();
             #endregion
+
+            app.UseMiddleware<GlobalErrorHandlingMiddleWare>();
 
             app.UseStaticFiles(); // Enable static files during response
 
