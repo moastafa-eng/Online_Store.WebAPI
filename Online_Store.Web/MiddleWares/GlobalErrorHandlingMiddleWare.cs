@@ -1,4 +1,5 @@
-﻿using Domain.Exceptions.NotFoundEx;
+﻿using Domain.Exceptions.BadRequestEx;
+using Domain.Exceptions.NotFoundEx;
 using Microsoft.AspNetCore.Http;
 using Shard.ModelErrors;
 
@@ -43,7 +44,8 @@ namespace Online_Store.Web.MiddleWares
                 // 1.Set Status Code
                 context.Response.StatusCode = ex switch
                 {
-                    ProductNotFoundEx => StatusCodes.Status404NotFound,
+                    NotFoundEx => StatusCodes.Status404NotFound,
+                    BadRequestEx => StatusCodes.Status400BadRequest,
                     _=> StatusCodes.Status500InternalServerError
                 };
 
