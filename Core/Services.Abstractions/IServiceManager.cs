@@ -1,4 +1,5 @@
 ﻿using Services.Abstractions.Baskets;
+using Services.Abstractions.Cache;
 using Services.Abstractions.Products;
 
 namespace Services.Abstractions
@@ -7,5 +8,6 @@ namespace Services.Abstractions
     {
         public IProductService ProductService { get; }
         public IBasketService BasketService { get; }
+        public ICacheService CacheService { get; }
     }
 }
