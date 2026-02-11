@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Data.DbContexts;
+using Persistence.Repositories;
 using Persistence.UnitOfWorks;
 using StackExchange.Redis;
 
@@ -21,6 +22,7 @@ namespace Persistence.Extensions
             // DI Container
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IBasketRepository, BasketRepository>();
 
             #region Comment
             // // Use Singleton since ConnectionMultiplexer is thread-safe and should be reused
