@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Data.DbContexts;
 using Persistence.UnitOfWorks;
+using StackExchange.Redis;
 
 namespace Persistence.Extensions
 {
@@ -20,6 +21,15 @@ namespace Persistence.Extensions
             // DI Container
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            #region Comment
+            // // Use Singleton since ConnectionMultiplexer is thread-safe and should be reused
+            // throughout the application's lifetime to avoid multiple Redis connections. 
+            #endregion
+            services.AddSingleton<IConnectionMultiplexer>(
+                ConnectionMultiplexer.Connect(
+                    confing.GetConnectionString("RedisConnection"))
+            );
 
             return services;
         }
