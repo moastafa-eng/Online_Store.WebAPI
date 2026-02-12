@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Attributes;
 using Services.Abstractions;
 using Shard;
 using Shard.DTOs.Products;
@@ -12,6 +13,7 @@ namespace Presentation
     public class ProductsController(IServiceManager _serviceManager) : ControllerBase  // ControllerBase does not contain View Tools
     {
         [HttpGet] // Route : BaseUrl/api/products
+        [Cache(60)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResponse<ProductResponse>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
