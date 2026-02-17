@@ -35,6 +35,7 @@ namespace Online_Store.Web.Extensions
             var scope = app.Services.CreateScope();
             var DbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
             await DbInitializer.InitializeAsync();
+            await DbInitializer.InitializeIdentityAsync();
 
             return app;
         }

@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Persistence.Extensions;
+using Persistence.Identity.Contexts;
 using Services.Extensions;
 using Shard.ModelErrors;
 
@@ -10,6 +13,8 @@ namespace Online_Store.Web.Extensions
         public static IServiceCollection AddAllApplicationServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddWebServices();
+
+            services.AddIdentityServices();
 
             services.AddAllPersistenceLayerServices(config);
 
@@ -26,6 +31,18 @@ namespace Online_Store.Web.Extensions
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+
+            return services;
+        }
+
+        private static IServiceCollection AddIdentityServices(this IServiceCollection services)
+        {
+            services.AddIdentityCore<AppUser>(options =>
+            {
+                // Identity Configurations
+                options.User.RequireUniqueEmail = true;
+            }).AddRoles<IdentityRole>() // Add RoleManager
+            .AddEntityFrameworkStores<IdentityStoreDbContext>(); // AddIdentityStoreDbContext
 
             return services;
         }
