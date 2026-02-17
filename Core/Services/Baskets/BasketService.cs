@@ -4,7 +4,7 @@ using AutoMapper;
 using Domain.Contracts;
 using Domain.Entities.Baskets;
 using Domain.Exceptions.BadRequestEx;
-using Domain.Exceptions.NotFoundEx;
+using Domain.Exceptions.WebAPI;
 using Services.Abstractions.Baskets;
 using Shard.Baskets;
 
@@ -16,7 +16,7 @@ namespace Services.Baskets
         public async Task<BasketDto?> GetBasketAsync(string Id)
         {
             var basket = await _repository.GetBasketAsync(Id);
-            if (basket is null) throw new BasketNotFoundEx(Id);
+            if (basket is null) throw new BasketNotFoundException(Id);
 
             // mapping from CustomerBasket to basket Dto
             var result = _mapper.Map<BasketDto>(basket);

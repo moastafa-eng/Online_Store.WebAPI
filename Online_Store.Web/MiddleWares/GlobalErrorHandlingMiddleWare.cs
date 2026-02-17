@@ -1,6 +1,6 @@
 ﻿using Domain.Exceptions.BadRequestEx;
-using Domain.Exceptions.NotFoundEx;
-using Microsoft.AspNetCore.Http;
+using Domain.Exceptions.NotFoundExceptions;
+using Domain.Exceptions.UnauthorizedExceptions;
 using Shard.ModelErrors;
 
 namespace Online_Store.Web.MiddleWares
@@ -44,8 +44,9 @@ namespace Online_Store.Web.MiddleWares
                 // 1.Set Status Code
                 context.Response.StatusCode = ex switch
                 {
-                    NotFoundEx => StatusCodes.Status404NotFound,
+                    NotFoundException => StatusCodes.Status404NotFound,
                     BadRequestEx => StatusCodes.Status400BadRequest,
+                    UnauthorizedException => StatusCodes.Status401Unauthorized,
                     _=> StatusCodes.Status500InternalServerError
                 };
 
