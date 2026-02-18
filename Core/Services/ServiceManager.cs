@@ -2,6 +2,7 @@
 using Domain.Contracts;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Services.Abstractions;
 using Services.Abstractions.Auth;
 using Services.Abstractions.Baskets;
@@ -19,7 +20,8 @@ namespace Services
         IMapper _mapper,
         IBasketRepository _basketRepository,
         ICacheRepository _cacheRepository,
-        UserManager<AppUser> _userManger
+        UserManager<AppUser> _userManger,
+        IConfiguration _config
 
         ) : IServiceManager
     {
@@ -30,6 +32,6 @@ namespace Services
 
         public ICacheService CacheService { get; } = new CacheService(_cacheRepository);
 
-        public IAuthService AuthService { get; } = new AuthService(_userManger);
+        public IAuthService AuthService { get; } = new AuthService(_userManger, _config);
     }
 }

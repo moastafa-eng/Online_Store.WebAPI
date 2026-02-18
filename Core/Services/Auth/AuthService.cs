@@ -3,6 +3,7 @@ using Domain.Exceptions.BadRequestEx;
 using Domain.Exceptions.NotFoundEx.Identity;
 using Domain.Exceptions.UnauthorizedExceptions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions.Auth;
 using Shard.DTOs.Auth;
@@ -12,7 +13,7 @@ using System.Text;
 
 namespace Services.Auth
 {
-    public class AuthService(UserManager<AppUser> _userManager) : IAuthService
+    public class AuthService(UserManager<AppUser> _userManager, IConfiguration _config) : IAuthService
     {
         public async Task<UserResponse> LoginAsync(LoginRequest request)
         {
@@ -80,19 +81,17 @@ namespace Services.Auth
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            // key
-            var StringKey = "StrongSecurityKeyStrongSecurityKeyStrongSecurityKeyStrongSecurityKeyStrongSecurityKeyStrongSecurityKey";
 
             // encrypted key
             // SymmetricSecurityKey : means this key use for Encryption and Decryption 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(StringKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtOptions:SecurityKey"]));
 
             // Create Token
             var token = new JwtSecurityToken(
-                issuer: "https://localhost:7177",
-                audience: "OnlineStore",
+                issuer: _config["JwtOptions:Issure"],
+                audience: _config["JwtOptions:Audience"],
                 claims: authClaims,
-                expires: DateTime.UtcNow.AddDays(1),
+                expires: DateTime.UtcNow.AddDays(double.Parse(_config["JwtOptions:DurationInDayes"])),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
                 );
             
