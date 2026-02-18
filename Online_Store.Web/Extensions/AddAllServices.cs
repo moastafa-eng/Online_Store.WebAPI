@@ -1,11 +1,14 @@
 ﻿using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens.Experimental;
 using Persistence.Extensions;
 using Persistence.Identity.Contexts;
 using Services.Extensions;
 using Shard.JWT;
 using Shard.ModelErrors;
+using System.Text;
 
 namespace Online_Store.Web.Extensions
 {
@@ -20,6 +23,8 @@ namespace Online_Store.Web.Extensions
             services.AddAllPersistenceLayerServices(config);
 
             services.AddServiceLayerServices(config);
+
+            services.AddAuthonticationService(config);
 
             services.ConfigureApiBehaviorOptions();
 
@@ -38,6 +43,36 @@ namespace Online_Store.Web.Extensions
             return services;
         }
 
+        private static IServiceCollection AddAuthonticationService(this IServiceCollection services, IConfiguration config)
+        {
+            // Get Obj from JwtOptins by pending data from AppSetting to JwtOptions
+            var jwtOptions = config.GetSection("JwtOptions").Get<JwtOptions>();
+
+            // Change Default Schema from token from Cookies to token from JWT
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "Bearer";
+                options.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(options =>
+            {
+                // Configure the rules to validate the incoming JWT tokens
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtOptions.Issure,
+                    
+                    ValidateAudience = true,
+                    ValidAudience = jwtOptions.Audience,
+
+                    ValidateLifetime = true,
+                    
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecurityKey))
+                };
+            });
+
+            return services;
+        }
         private static IServiceCollection AddIdentityServices(this IServiceCollection services)
         {
             services.AddIdentityCore<AppUser>(options =>
@@ -60,7 +95,7 @@ namespace Online_Store.Web.Extensions
                 {
                     // Check if there are any errors in the ModelState
                     var errores = actionContext.ModelState.Where(M => M.Value.Errors.Any())
-                    .Select(M => new ValidationError
+                    .Select(M => new Shard.ModelErrors.ValidationError
                     {
                         Field = M.Key,
                         Errors = M.Value.Errors.Select(E => E.ErrorMessage) // Map the error messages from the ModelState into the Errors field of ValidationError
