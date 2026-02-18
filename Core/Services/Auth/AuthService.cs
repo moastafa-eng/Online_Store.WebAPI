@@ -3,8 +3,12 @@ using Domain.Exceptions.BadRequestEx;
 using Domain.Exceptions.NotFoundEx.Identity;
 using Domain.Exceptions.UnauthorizedExceptions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions.Auth;
 using Shard.DTOs.Auth;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Services.Auth
 {
@@ -24,7 +28,7 @@ namespace Services.Auth
             {
                 Email = user.Email,
                 DisplayName = user.DisplayName,
-                Token = "Token will be here"
+                Token = await GenerateTokenAsync(user)
             };
         }
 
@@ -45,8 +49,55 @@ namespace Services.Auth
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
-                Token = "Token will be here"
+                Token = await  GenerateTokenAsync(user)
             };
+        }
+
+        
+
+        private async Task<string> GenerateTokenAsync(AppUser user)
+        {
+            // Token : 
+            // 1.Header     : [type, algo]
+            // 2.Payload    : [Claims]
+            // 3.Signature  : [key]
+
+
+            // Define claims (the payload data)
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.GivenName, user.UserName),
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
+            };
+
+            // Get all roles for Specific user
+            var roles = await _userManager.GetRolesAsync(user);
+
+            // add user roles to claims
+            foreach(var role in roles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            // key
+            var StringKey = "StrongSecurityKeyStrongSecurityKeyStrongSecurityKeyStrongSecurityKeyStrongSecurityKeyStrongSecurityKey";
+
+            // encrypted key
+            // SymmetricSecurityKey : means this key use for Encryption and Decryption 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(StringKey));
+
+            // Create Token
+            var token = new JwtSecurityToken(
+                issuer: "https://localhost:7177",
+                audience: "OnlineStore",
+                claims: authClaims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+                );
+            
+            // Return Token As a string
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
