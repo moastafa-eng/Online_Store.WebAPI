@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Persistence.Extensions;
 using Persistence.Identity.Contexts;
 using Services.Extensions;
+using Shard.JWT;
 using Shard.ModelErrors;
 
 namespace Online_Store.Web.Extensions
@@ -22,6 +23,8 @@ namespace Online_Store.Web.Extensions
 
             services.ConfigureApiBehaviorOptions();
 
+            // Get Options from AppSetting in JwtOptions section
+            services.Configure<JwtOptions>(config.GetSection("JwtOptions"));
             return services;
         }
 

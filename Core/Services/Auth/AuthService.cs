@@ -4,16 +4,19 @@ using Domain.Exceptions.NotFoundEx.Identity;
 using Domain.Exceptions.UnauthorizedExceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions.Auth;
 using Shard.DTOs.Auth;
+using Shard.JWT;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace Services.Auth
 {
-    public class AuthService(UserManager<AppUser> _userManager, IConfiguration _config) : IAuthService
+    // IOption => Options Design Pattern
+    public class AuthService(UserManager<AppUser> _userManager, IOptions<JwtOptions> _options) : IAuthService
     {
         public async Task<UserResponse> LoginAsync(LoginRequest request)
         {
@@ -81,17 +84,18 @@ namespace Services.Auth
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
 
+            var options = _options.Value; // Obj from _options
 
             // encrypted key
             // SymmetricSecurityKey : means this key use for Encryption and Decryption 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtOptions:SecurityKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.SecurityKey));
 
             // Create Token
             var token = new JwtSecurityToken(
-                issuer: _config["JwtOptions:Issure"],
-                audience: _config["JwtOptions:Audience"],
+                issuer: options.Issure,
+                audience: options.Audience,
                 claims: authClaims,
-                expires: DateTime.UtcNow.AddDays(double.Parse(_config["JwtOptions:DurationInDayes"])),
+                expires: DateTime.UtcNow.AddDays(double.Parse(options.DurationInDayes)),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
                 );
             

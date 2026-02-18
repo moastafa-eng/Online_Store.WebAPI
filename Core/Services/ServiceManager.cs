@@ -3,6 +3,7 @@ using Domain.Contracts;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Services.Abstractions;
 using Services.Abstractions.Auth;
 using Services.Abstractions.Baskets;
@@ -12,6 +13,7 @@ using Services.Auth;
 using Services.Baskets;
 using Services.Cache;
 using Services.Products;
+using Shard.JWT;
 
 namespace Services
 {
@@ -21,7 +23,7 @@ namespace Services
         IBasketRepository _basketRepository,
         ICacheRepository _cacheRepository,
         UserManager<AppUser> _userManger,
-        IConfiguration _config
+        IOptions<JwtOptions> _options
 
         ) : IServiceManager
     {
@@ -32,6 +34,6 @@ namespace Services
 
         public ICacheService CacheService { get; } = new CacheService(_cacheRepository);
 
-        public IAuthService AuthService { get; } = new AuthService(_userManger, _config);
+        public IAuthService AuthService { get; } = new AuthService(_userManger, _options);
     }
 }
