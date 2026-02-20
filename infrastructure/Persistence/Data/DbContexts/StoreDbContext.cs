@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Products;
+﻿using Domain.Entities.Orders;
+using Domain.Entities.Products;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -18,9 +19,15 @@ namespace Persistence.Data.DbContexts
             base.OnModelCreating(modelBuilder);
         }
 
+
+
         // representation the tables in DB
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductBrand> ProductBrands { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
     }
 }
