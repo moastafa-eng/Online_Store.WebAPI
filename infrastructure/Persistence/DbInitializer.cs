@@ -2,6 +2,7 @@
 
 using Domain.Contracts;
 using Domain.Entities.Identity;
+using Domain.Entities.Orders;
 using Domain.Entities.Products;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -86,6 +87,15 @@ namespace Persistence
                 }
             }
 
+            if(!_context.DeliveryMethods.Any())
+            {
+                var deliveryMethodsData = await File.ReadAllTextAsync(@"..\infrastructure\Persistence\Data\Data Seeding\delivery.json");
+
+                var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodsData);
+
+                if (deliveryMethods is not null && deliveryMethods.Count > 0)
+                    await _context.AddRangeAsync(deliveryMethods);
+            }
 
             // Save all changes
             await _context.SaveChangesAsync();
