@@ -26,9 +26,9 @@ namespace Domain.Entities.Orders
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.UtcNow;
         public decimal SubTotal { get; set; } // Price * Quantity
 
-        [NotMapped] // => Derived Attribute In DB
-        public decimal Total { get; set; } // Delivery Method Cost + SubTotal
-        //public decimal GetTotal() => SubTotal + DeliveryMethod.Cost;
+        //[NotMapped] // => Derived Attribute In DB
+        //public decimal Total { get; set; } // Delivery Method Cost + SubTotal
+        public decimal GetTotal() => SubTotal + DeliveryMethod.Cost;
         public ShippingAddress OrderAddress { get; set; }
 
 

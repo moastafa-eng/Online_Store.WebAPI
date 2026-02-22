@@ -24,6 +24,8 @@ namespace Services.Orders
 
             
 
+
+
             // Get Order Items
             // 1.Get basket by id
             var basket = await _basketRepository.GetBasketAsync(request.BasketId);
@@ -33,6 +35,7 @@ namespace Services.Orders
             var orderItems = new List<OrderItem>();
             foreach (var item in basket.Items)
             {
+                // Check Product Price
                 var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(item.Id);
                 if (product is null) throw new ProductNotFoundException(item.Id);
 
@@ -43,6 +46,8 @@ namespace Services.Orders
 
                 orderItems.Add(orderItem);
             }
+
+
 
             var subTototal = orderItems.Sum(OI => OI.Price * OI.Quantity);
 
