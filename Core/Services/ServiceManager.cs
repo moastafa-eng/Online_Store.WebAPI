@@ -8,10 +8,12 @@ using Services.Abstractions;
 using Services.Abstractions.Auth;
 using Services.Abstractions.Baskets;
 using Services.Abstractions.Cache;
+using Services.Abstractions.Orders;
 using Services.Abstractions.Products;
 using Services.Auth;
 using Services.Baskets;
 using Services.Cache;
+using Services.Orders;
 using Services.Products;
 using Shard.JWT;
 
@@ -35,5 +37,6 @@ namespace Services
         public ICacheService CacheService { get; } = new CacheService(_cacheRepository);
 
         public IAuthService AuthService { get; } = new AuthService(_userManger, _options);
+        public IOrderService OrderService { get; } = new OrderService(_unitOfWork, _mapper, _basketRepository);
     }
 }

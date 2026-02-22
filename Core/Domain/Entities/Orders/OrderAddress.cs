@@ -1,7 +1,7 @@
 ﻿namespace Domain.Entities.Orders
 {
     //  Part of order table
-    public class ShippingAddress
+    public class OrderAddress
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

@@ -15,7 +15,7 @@ namespace Shard.DTOs.Orders
         public DateTimeOffset OrderDate { get; set; }
         public OrderAddressDto ShippingAddress { get; set; }
         public string DeliveryMethod { get; set; } // Delivery method name.
-        public ICollection<OrderItemDto> Itmes { get; set; }
+        public ICollection<OrderItemDto> Items { get; set; }
         public decimal SubTotal { get; set; } // Price * Quantity
         public decimal Total { get; set; } // SubTotal + Delivery Method Cost
 

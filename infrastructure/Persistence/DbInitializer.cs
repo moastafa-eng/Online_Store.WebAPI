@@ -87,7 +87,7 @@ namespace Persistence
                 }
             }
 
-            if(!_context.DeliveryMethods.Any())
+            if (!_context.DeliveryMethods.Any())
             {
                 var deliveryMethodsData = await File.ReadAllTextAsync(@"..\infrastructure\Persistence\Data\Data Seeding\delivery.json");
 

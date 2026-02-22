@@ -8,7 +8,7 @@ using Persistence.Data.DbContexts;
 
 #nullable disable
 
-namespace Persistence.Data.Migrations
+namespace Persistence.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
     partial class StoreDbContextModelSnapshot : ModelSnapshot
@@ -30,9 +30,6 @@ namespace Persistence.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18, 2)");
-
                     b.Property<string>("DeliveyTime")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -43,6 +40,9 @@ namespace Persistence.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("varchar");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.Property<string>("ShortName")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -50,7 +50,7 @@ namespace Persistence.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryMethods");
+                    b.ToTable("DeliveryMethods", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Orders.Order", b =>
@@ -79,7 +79,7 @@ namespace Persistence.Data.Migrations
 
                     b.HasIndex("DeliveryMethodId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Orders.OrderItem", b =>
@@ -103,7 +103,7 @@ namespace Persistence.Data.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Products.Product", b =>
@@ -144,7 +144,7 @@ namespace Persistence.Data.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Products.ProductBrand", b =>
@@ -162,7 +162,7 @@ namespace Persistence.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductBrands");
+                    b.ToTable("ProductBrands", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Products.ProductType", b =>
@@ -180,7 +180,7 @@ namespace Persistence.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductTypes");
+                    b.ToTable("ProductTypes", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Orders.Order", b =>
@@ -191,7 +191,7 @@ namespace Persistence.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Domain.Entities.Orders.ShippingAddress", "OrderAddress", b1 =>
+                    b.OwnsOne("Domain.Entities.Orders.Order.ShippingAddress#Domain.Entities.Orders.OrderAddress", "ShippingAddress", b1 =>
                         {
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uniqueidentifier");
@@ -218,7 +218,7 @@ namespace Persistence.Data.Migrations
 
                             b1.HasKey("OrderId");
 
-                            b1.ToTable("Orders");
+                            b1.ToTable("Orders", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
@@ -226,7 +226,7 @@ namespace Persistence.Data.Migrations
 
                     b.Navigation("DeliveryMethod");
 
-                    b.Navigation("OrderAddress")
+                    b.Navigation("ShippingAddress")
                         .IsRequired();
                 });
 
@@ -237,7 +237,7 @@ namespace Persistence.Data.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.OwnsOne("Domain.Entities.Orders.ProductInOrderItem", "Product", b1 =>
+                    b.OwnsOne("Domain.Entities.Orders.OrderItem.Product#Domain.Entities.Orders.ProductInOrderItem", "Product", b1 =>
                         {
                             b1.Property<int>("OrderItemId")
                                 .HasColumnType("int");
@@ -255,7 +255,7 @@ namespace Persistence.Data.Migrations
 
                             b1.HasKey("OrderItemId");
 
-                            b1.ToTable("OrderItems");
+                            b1.ToTable("OrderItems", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderItemId");

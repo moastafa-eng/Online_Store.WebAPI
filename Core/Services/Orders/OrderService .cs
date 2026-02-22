@@ -14,7 +14,7 @@ namespace Services.Orders
         public async Task<OrderResponse> CreateOrderAsync(OrderRequest request, string userEmail)
         {
             // Get Order Address
-            var orderAddress = _mapper.Map<ShippingAddress>(request.ShipToAddress);
+            var orderAddress = _mapper.Map<OrderAddress>(request.ShipToAddress);
 
 
 
@@ -41,14 +41,14 @@ namespace Services.Orders
 
                 if (product.Price != item.Price) item.Price = product.Price;
 
-                var productInOrderItem = _mapper.Map<ProductInOrderItem>(item);
+                var productInOrderItem = new ProductInOrderItem(item.Id, item.ProductName, item.PictureUrl);
                 var orderItem = new OrderItem(productInOrderItem, item.Price, item.Quantity);
 
                 orderItems.Add(orderItem);
             }
 
 
-
+            // Calculate SubTotal
             var subTototal = orderItems.Sum(OI => OI.Price * OI.Quantity);
 
             var order = new Order(userEmail, subTototal, orderAddress, deliveryMethod, orderItems);
@@ -58,8 +58,7 @@ namespace Services.Orders
             var count = await _unitOfWork.SaveChangesAsync();
             if (count <= 0) throw new CreateOrderBadRequestEx();
 
-            var orderResponse = _mapper.Map<OrderResponse>(order);
-            return orderResponse;
+            return _mapper.Map<OrderResponse>(order);
         }
 
         public Task<IEnumerable<DeliveryMethodResponse>> GetAllDeliveryMethodsAsync()

@@ -9,11 +9,11 @@ using Persistence.Data.DbContexts;
 
 #nullable disable
 
-namespace Persistence.Data.Migrations
+namespace Persistence.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20260220064417_AddOrderModuleTables")]
-    partial class AddOrderModuleTables
+    [Migration("20260222191359_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,9 +33,6 @@ namespace Persistence.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18, 2)");
-
                     b.Property<string>("DeliveyTime")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -45,6 +42,9 @@ namespace Persistence.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("varchar");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("ShortName")
                         .IsRequired()
@@ -194,7 +194,7 @@ namespace Persistence.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Domain.Entities.Orders.ShippingAddress", "OrderAddress", b1 =>
+                    b.OwnsOne("Domain.Entities.Orders.OrderAddress", "ShippingAddress", b1 =>
                         {
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uniqueidentifier");
@@ -229,7 +229,7 @@ namespace Persistence.Data.Migrations
 
                     b.Navigation("DeliveryMethod");
 
-                    b.Navigation("OrderAddress")
+                    b.Navigation("ShippingAddress")
                         .IsRequired();
                 });
 

@@ -8,7 +8,7 @@ namespace Persistence.Data.Configurations.OrderConfigurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.OwnsOne(O => O.OrderAddress);
+            builder.OwnsOne(O => O.ShippingAddress);
 
 
 

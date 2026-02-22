@@ -11,7 +11,7 @@ namespace Persistence.Data.Configurations.OrderConfigurations
             builder.Property(D => D.ShortName).HasColumnType("varchar").HasMaxLength(128);
             builder.Property(D => D.Description).HasColumnType("varchar").HasMaxLength(256);
             builder.Property(D => D.DeliveyTime).HasColumnType("varchar").HasMaxLength(128);
-            builder.Property(D => D.Cost).HasColumnType("decimal(18, 2)");
+            builder.Property(D => D.Price).HasColumnType("decimal(18, 2)");
         }
     }
 }

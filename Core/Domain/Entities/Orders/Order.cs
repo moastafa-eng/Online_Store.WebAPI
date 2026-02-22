@@ -9,11 +9,11 @@ namespace Domain.Entities.Orders
 
 
         //  Parameterized Constructor using for Business logic purpose
-        public Order(string userEmail, decimal subTotal, ShippingAddress orderAddress, DeliveryMethod deliveryMethod, ICollection<OrderItem> items)
+        public Order(string userEmail, decimal subTotal, OrderAddress orderAddress, DeliveryMethod deliveryMethod, ICollection<OrderItem> items)
         {
             UserEmail = userEmail;
             SubTotal = subTotal;
-            OrderAddress = orderAddress;
+            ShippingAddress = orderAddress;
             DeliveryMethod = deliveryMethod;
             Items = items;
         }
@@ -28,8 +28,8 @@ namespace Domain.Entities.Orders
 
         //[NotMapped] // => Derived Attribute In DB
         //public decimal Total { get; set; } // Delivery Method Cost + SubTotal
-        public decimal GetTotal() => SubTotal + DeliveryMethod.Cost;
-        public ShippingAddress OrderAddress { get; set; }
+        public decimal GetTotal() => SubTotal + DeliveryMethod.Price;
+        public OrderAddress ShippingAddress { get; set; }
 
 
         // Enumerators
