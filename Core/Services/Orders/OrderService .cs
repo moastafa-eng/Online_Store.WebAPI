@@ -1,0 +1,75 @@
+﻿using AutoMapper;
+using Domain.Contracts;
+using Domain.Entities.Orders;
+using Domain.Entities.Products;
+using Domain.Exceptions.BadRequestEx;
+using Domain.Exceptions.WebAPI;
+using Services.Abstractions.Orders;
+using Shard.DTOs.Orders;
+
+namespace Services.Orders
+{
+    public class OrderService(IUnitOfWork _unitOfWork, IMapper _mapper, IBasketRepository _basketRepository) : IOrderService
+    {
+        public async Task<OrderResponse> CreateOrderAsync(OrderRequest request, string userEmail)
+        {
+            // Get Order Address
+            var orderAddress = _mapper.Map<ShippingAddress>(request.ShipToAddress);
+
+
+
+            // Get Delivery Method By Id
+            var deliveryMethod = await _unitOfWork.GetRepository<DeliveryMethod, int>().GetByIdAsync(request.DeliveryMethodId);
+            if (deliveryMethod is null) throw new DeliveryMethodNotFoundEx(request.DeliveryMethodId);
+
+            
+
+            // Get Order Items
+            // 1.Get basket by id
+            var basket = await _basketRepository.GetBasketAsync(request.BasketId);
+            if (basket is null) throw new BasketNotFoundException(request.BasketId);
+
+            // 2.Convert every basket item to order item
+            var orderItems = new List<OrderItem>();
+            foreach (var item in basket.Items)
+            {
+                var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(item.Id);
+                if (product is null) throw new ProductNotFoundException(item.Id);
+
+                if (product.Price != item.Price) item.Price = product.Price;
+
+                var productInOrderItem = _mapper.Map<ProductInOrderItem>(item);
+                var orderItem = new OrderItem(productInOrderItem, item.Price, item.Quantity);
+
+                orderItems.Add(orderItem);
+            }
+
+            var subTototal = orderItems.Sum(OI => OI.Price * OI.Quantity);
+
+            var order = new Order(userEmail, subTototal, orderAddress, deliveryMethod, orderItems);
+
+            await _unitOfWork.GetRepository<Order, Guid>().AddAsync(order);
+
+            var count = await _unitOfWork.SaveChangesAsync();
+            if (count <= 0) throw new CreateOrderBadRequestEx();
+
+            var orderResponse = _mapper.Map<OrderResponse>(order);
+            return orderResponse;
+        }
+
+        public Task<IEnumerable<DeliveryMethodResponse>> GetAllDeliveryMethodsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OrderResponse> GetOrderByIdForSpecificUserAsync(Guid id, string userEmail)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<OrderResponse>> GetOrdersByIdForSpecificUserAsync(string UserEmail)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

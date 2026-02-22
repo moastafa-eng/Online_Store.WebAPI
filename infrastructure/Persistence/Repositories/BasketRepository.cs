@@ -54,6 +54,7 @@ namespace Persistence.Repositories
 
             // If deserialization fails, return null; otherwise return the basket object
             if (Basket is null) return null;
+
             return Basket;
         }
     }
