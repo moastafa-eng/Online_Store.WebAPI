@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
-using Shard.Baskets;
+using Shard.DTOs.Baskets;
 
 namespace Presentation
 {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities.Baskets;
-using Shard.Baskets;
+using Shard.DTOs.Baskets;
 
 namespace Services.Mapping.Baskets
 {

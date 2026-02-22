@@ -1,4 +1,4 @@
-﻿using Shard.Baskets;
+﻿using Shard.DTOs.Baskets;
 
 namespace Services.Abstractions.Baskets
 {

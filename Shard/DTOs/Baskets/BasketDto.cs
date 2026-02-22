@@ -1,4 +1,4 @@
-﻿namespace Shard.Baskets
+﻿namespace Shard.DTOs.Baskets
 {
     public class BasketDto
     {

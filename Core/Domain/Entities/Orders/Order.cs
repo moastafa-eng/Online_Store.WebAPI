@@ -23,7 +23,7 @@ namespace Domain.Entities.Orders
 
         // Properties
         public string UserEmail { get; set; }
-        public DateTimeOffset OrderDate { get; set; }
+        public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.UtcNow;
         public decimal SubTotal { get; set; } // Price * Quantity
 
         [NotMapped] // => Derived Attribute In DB

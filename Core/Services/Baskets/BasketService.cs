@@ -6,7 +6,7 @@ using Domain.Entities.Baskets;
 using Domain.Exceptions.BadRequestEx;
 using Domain.Exceptions.WebAPI;
 using Services.Abstractions.Baskets;
-using Shard.Baskets;
+using Shard.DTOs.Baskets;
 
 namespace Services.Baskets
 {
