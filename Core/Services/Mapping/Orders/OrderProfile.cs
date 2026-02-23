@@ -23,6 +23,8 @@ namespace Services.Mapping.Orders
                 .ForMember(D => D.PictureUrl, O => O.MapFrom(S => S.Product.PictureUrl))
                 .ForMember(D => D.Price, O => O.MapFrom(S => S.Price))
                 .ForMember(D => D.Quantity, O => O.MapFrom(S => S.Quantity));
+
+            CreateMap<DeliveryMethod, DeliveryMethodResponse>();
         }
     }
 }
