@@ -8,6 +8,6 @@ namespace Services.Abstractions.Orders
         Task<OrderResponse> CreateOrderAsync(OrderRequest request, string userEmail);
         Task<IEnumerable<DeliveryMethodResponse>> GetAllDeliveryMethodsAsync();
         Task<OrderResponse> GetOrderByIdForSpecificUserAsync(Guid id, string userEmail);
-        Task<IEnumerable<OrderResponse>> GetOrdersByIdForSpecificUserAsync(string UserEmail);
+        Task<IEnumerable<OrderResponse>> GetOrdersForSpecificUserAsync(string UserEmail);
     }
 }

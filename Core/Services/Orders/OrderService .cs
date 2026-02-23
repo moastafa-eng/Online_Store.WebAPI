@@ -74,10 +74,12 @@ namespace Services.Orders
             var specs = new OrderSpecifications(id, userEmail);
             var order = await _unitOfWork.GetRepository<Order, Guid>().GetByIdAsync(specs);
 
+            if (order is null) throw new OrderNotFoundException(id);
+
             return _mapper.Map<OrderResponse>(order);
         }
 
-        public async Task<IEnumerable<OrderResponse>> GetOrdersByIdForSpecificUserAsync(string userEmail)
+        public async Task<IEnumerable<OrderResponse>> GetOrdersForSpecificUserAsync(string userEmail)
         {
 
             var specs = new OrderSpecifications(userEmail);
