@@ -17,7 +17,7 @@ using System.Text;
 namespace Services.Auth
 {
     // IOption => Options Design Pattern
-    public class AuthService(UserManager<AppUser> _userManager, IOptions<JwtOptions> _options, Mapper _mapper) : IAuthService
+    public class AuthService(UserManager<AppUser> _userManager, IOptions<JwtOptions> _options, IMapper _mapper) : IAuthService
     {
         public async Task<bool> CheckEmailExistAsync(string email)
         {
@@ -30,7 +30,7 @@ namespace Services.Auth
             //var currentUser = await _userManager.FindByEmailAsync(email);
 
 
-            var currentUser = await _userManager.Users.Include(U => U.Address).FirstOrDefaultAsync(U => U.Email == email);
+            var currentUser = await _userManager.Users.Include(U => U.Address).FirstOrDefaultAsync(U => U.Email.ToLower() == email.ToLower());
             if (currentUser is null) throw new UserNotFoundException(currentUser.Id);
 
             return _mapper.Map<AddressDto>(currentUser.Address);
@@ -51,7 +51,7 @@ namespace Services.Auth
         }
         public async Task<AddressDto> UpdateCurrentUserAddressAsync(string email, AddressDto request)
         {
-            var currentUser =await _userManager.Users.Include(U => U.Address).FirstOrDefaultAsync(U => U.Email == email);
+            var currentUser =await _userManager.Users.Include(U => U.Address).FirstOrDefaultAsync(U => U.Email.ToLower() == email.ToLower());
             if (currentUser is null) throw new UserNotFoundException(currentUser.Id);
 
 
