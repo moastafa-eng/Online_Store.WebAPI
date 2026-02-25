@@ -8,6 +8,8 @@ namespace Presentation
     [Route("api/{controller}")]
     public class AuthController(IServiceManager _serviceManager) : ControllerBase
     {
+
+        // Login
         [HttpPost("Login")] // Url : BaseUrl/api/Auth/Login
         public async Task<IActionResult> Login(LoginRequest request)
         {
@@ -15,11 +17,28 @@ namespace Presentation
             return Ok(result);
         }
 
+
+        // Register
         [HttpPost("Register")] // Url : BaseUrl/api/Auth/Register
         public async Task<IActionResult> Register(RegisterRequest request)
         {
             var result = await _serviceManager.AuthService.RegisterASync(request);
             return Ok(result);
         }
+
+        // check Email Exist 
+
+
+
+
+        // Get Current User
+
+        
+
+        // Get Current User Address
+
+
+
+        // Update Current User Address
     }
 }

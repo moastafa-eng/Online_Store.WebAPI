@@ -1,9 +1,10 @@
-﻿using Domain.Entities.Identity;
+﻿using AutoMapper;
+using Domain.Entities.Identity;
 using Domain.Exceptions.BadRequestEx;
 using Domain.Exceptions.NotFoundEx.Identity;
 using Domain.Exceptions.UnauthorizedExceptions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions.Auth;
@@ -16,8 +17,65 @@ using System.Text;
 namespace Services.Auth
 {
     // IOption => Options Design Pattern
-    public class AuthService(UserManager<AppUser> _userManager, IOptions<JwtOptions> _options) : IAuthService
+    public class AuthService(UserManager<AppUser> _userManager, IOptions<JwtOptions> _options, Mapper _mapper) : IAuthService
     {
+        public async Task<bool> CheckEmailExistAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email) != null;
+        }
+
+        public async Task<AddressDto?> GetCurrentUserAddressAsync(string email)
+        {
+            // this method dose not load the Navigational Properties
+            //var currentUser = await _userManager.FindByEmailAsync(email);
+
+
+            var currentUser = await _userManager.Users.Include(U => U.Address).FirstOrDefaultAsync(U => U.Email == email);
+            if (currentUser is null) throw new UserNotFoundException(currentUser.Id);
+
+            return _mapper.Map<AddressDto>(currentUser.Address);
+        }
+
+        public async Task<UserResponse?> GetCurrentUserAsync(string email)
+        {
+            var currentUser = await _userManager.FindByEmailAsync(email);
+
+            if (currentUser is null) throw new UserNotFoundException(currentUser.Id);
+
+            return new UserResponse 
+            {
+                Email = currentUser.Email,
+                DisplayName = currentUser.DisplayName,
+                Token = await GenerateTokenAsync(currentUser)
+            };
+        }
+        public async Task<AddressDto> UpdateCurrentUserAddressAsync(string email, AddressDto request)
+        {
+            var currentUser =await _userManager.Users.Include(U => U.Address).FirstOrDefaultAsync(U => U.Email == email);
+            if (currentUser is null) throw new UserNotFoundException(currentUser.Id);
+
+
+            if(currentUser.Address is null)
+            {
+                // Create new address
+
+                currentUser.Address = _mapper.Map<Address>(request);
+            }
+
+            // update the old address
+
+            currentUser.Address.FirstName = request.FirstName;
+            currentUser.Address.LastName = request.LastName;
+            currentUser.Address.City = request.City;
+            currentUser.Address.Street = request.Street;
+            currentUser.Address.Country = request.Country;
+
+            await _userManager.UpdateAsync(currentUser);
+
+            return _mapper.Map<AddressDto>(currentUser.Address);
+            
+        }
+
         public async Task<UserResponse> LoginAsync(LoginRequest request)
         {
             // Find user by Email
@@ -57,7 +115,6 @@ namespace Services.Auth
             };
         }
 
-        
 
         private async Task<string> GenerateTokenAsync(AppUser user)
         {

@@ -6,6 +6,11 @@ namespace Services.Abstractions.Auth
     {
         Task<UserResponse> LoginAsync(LoginRequest request);
         Task<UserResponse> RegisterASync(RegisterRequest request);
+
+        Task<bool> CheckEmailExistAsync(string email);
+        Task<UserResponse?> GetCurrentUserAsync(string email);
+        Task<AddressDto?> GetCurrentUserAddressAsync(string email);
+        Task<AddressDto> UpdateCurrentUserAddressAsync(string email, AddressDto request);
     }
 
 }
