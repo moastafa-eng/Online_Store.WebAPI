@@ -9,13 +9,14 @@ namespace Domain.Entities.Orders
 
 
         //  Parameterized Constructor using for Business logic purpose
-        public Order(string userEmail, decimal subTotal, OrderAddress orderAddress, DeliveryMethod deliveryMethod, ICollection<OrderItem> items)
+        public Order(string userEmail, decimal subTotal, OrderAddress orderAddress, DeliveryMethod deliveryMethod, ICollection<OrderItem> items, string paymentIntentId)
         {
             UserEmail = userEmail;
             SubTotal = subTotal;
             ShippingAddress = orderAddress;
             DeliveryMethod = deliveryMethod;
             Items = items;
+            PaymentIntentId = paymentIntentId;
         }
 
 
@@ -42,6 +43,9 @@ namespace Domain.Entities.Orders
         public int DeliveryMethodId { get; set; } // Fk
 
         public ICollection<OrderItem> Items { get; set; }
+
+
+        public string?  PaymentIntentId { get; set; }
 
     }
 }

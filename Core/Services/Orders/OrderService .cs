@@ -52,7 +52,7 @@ namespace Services.Orders
             // Calculate SubTotal
             var subTototal = orderItems.Sum(OI => OI.Price * OI.Quantity);
 
-            var order = new Order(userEmail, subTototal, orderAddress, deliveryMethod, orderItems);
+            var order = new Order(userEmail, subTototal, orderAddress, deliveryMethod, orderItems, basket.PaymentIntentId);
 
             await _unitOfWork.GetRepository<Order, Guid>().AddAsync(order);
 
